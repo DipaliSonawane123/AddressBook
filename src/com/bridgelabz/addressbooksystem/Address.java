@@ -34,4 +34,3 @@ public class Address {
         return "\nCity - "+city+"\nState - "+state+"\nZip Code - "+zip;
     }
 }
-
