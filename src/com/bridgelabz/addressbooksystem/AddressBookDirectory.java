@@ -23,7 +23,7 @@ public class AddressBookDirectory implements AddressBookDirectoryIF {
             switch (scannerObject.nextInt()) {
                 case 1:
                     addAddressBook();
-                    AddressBook addressBook1 =new AddressBook();
+                    AddressBook addressBook1=new AddressBook();
                     addressBook1.operation();
                     break;
                 case 2:
@@ -76,6 +76,7 @@ public class AddressBookDirectory implements AddressBookDirectoryIF {
         AddressBook addressBook = new AddressBook();
         addressBook.setAddressBookName(bookNameToAdd);
         addressBookDirectory.put(bookNameToAdd, addressBook);
+
 
     }
 
@@ -158,10 +159,9 @@ public class AddressBookDirectory implements AddressBookDirectoryIF {
         for (String eachBookName : addressBookDirectory.keySet()) {
 
             System.out.println(eachBookName);
-            AddressBook addressBook1=new AddressBook();
+            AddressBook addressBook1 =new AddressBook();
             addressBook1.displayContents();
         }
         System.out.println("-----------------------------------------");
-
     }
 }
