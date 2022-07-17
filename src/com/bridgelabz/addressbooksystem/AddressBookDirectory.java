@@ -1,39 +1,47 @@
 package com.bridgelabz.addressbooksystem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class AddressBookDirectory {
-
     public AddressBook addressBook;
     Scanner scannerObject = new Scanner(System.in);
-    Map<String,AddressBook> addressBookDirectory = new HashMap<String,AddressBook>();
+    Map<String,AddressBook> addressBookDirectory = new HashMap<>();
 
     public void operationDirectory() {
 
         boolean moreChanges = true;
         do {
+
             System.out.println("\nChoose the operation on the Directory you want to perform");
-            System.out.println("1.Add an Address Book\n2.Edit Existing Address Book\n3.Display Address book Directory\n4.Exit Address book System");
+            System.out.println("1.Add an Address Book\n2.Edit Existing Address Book\n3.Search Person By City\n4.Search Person By State\n5.Display Address book Directory\n6.Exit Address book System");
+
             switch (scannerObject.nextInt()) {
                 case 1:
                     addAddressBook();
-                    AddressBook addressBook =new AddressBook();
-                    addressBook.addContact();
+
                     break;
                 case 2:
                     editAddressBook();
-                    AddressBook addressBook1 =new AddressBook();
-                    addressBook1.editPerson();
-                    break;
-                case 3:
-                    displayDirectoryContents();
-                    AddressBook addressBook2 =new AddressBook();
-                    addressBook2.displayContents();
+
 
                     break;
+                case 3:
+                    searchByCity();
+                    break;
                 case 4:
+                    searchByState();
+
+                    break;
+                case 5:
+                    displayDirectoryContents();
+                    AddressBook addressBook1= new AddressBook();
+                    addressBook1.displayContents();
+
+                    break;
+                case 6:
                     moreChanges = false;
                     System.out.println("Exiting Address Book Directory !");
             }
@@ -53,10 +61,7 @@ public class AddressBookDirectory {
         AddressBook addressBook = new AddressBook();
         addressBook.setAddressBookName(bookNameToAdd);
         addressBookDirectory.put(bookNameToAdd, addressBook);
-        AddressBook addressBooks =new AddressBook();
-        addressBooks.operation();
-
-
+        addressBook.operation();
 
     }
 
@@ -75,6 +80,37 @@ public class AddressBookDirectory {
 
     }
 
+    public void searchByCity() {
+
+        System.out.println("Enter the name of the City where the Person resides : ");
+        String cityName = scannerObject.next();
+        System.out.println("Enter the name of the Person : ");
+        String personName = scannerObject.next();
+
+        for(AddressBook addressBook : addressBookDirectory.values()) {
+            ArrayList<ContactPerson> contactList = addressBook.getContact();
+            contactList.stream()
+                    .filter(person -> person.getFirstName().equals(personName) && person.getAddress().getCity().equals(cityName))
+                    .forEach(person -> System.out.println(person));
+        }
+    }
+
+    public void searchByState() {
+
+        System.out.println("Enter the name of the State where the Person resides : ");
+        String stateName = scannerObject.next();
+        System.out.println("Enter the name of the Person : ");
+        String personName = scannerObject.next();
+
+        for(AddressBook addressBook : addressBookDirectory.values()) {
+            ArrayList<ContactPerson> contactList = ((AddressBook) addressBook).getContact();
+            contactList.stream()
+                    .filter(person -> person.getFirstName().equals(personName) && person.getAddress().getState().equals(stateName))
+                    .forEach(person -> System.out.println(person));
+        }
+
+    }
+
     public void displayDirectoryContents() {
 
         System.out.println("----- Contents of the Address Book Directory-----");
@@ -83,5 +119,9 @@ public class AddressBookDirectory {
             System.out.println(eachBookName);
         }
         System.out.println("-----------------------------------------");
+
+
+
     }
 }
+
