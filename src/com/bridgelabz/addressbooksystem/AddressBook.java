@@ -1,28 +1,36 @@
 package com.bridgelabz.addressbooksystem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class AddressBook implements AddressBookIF {
     Scanner scannerObject = new Scanner(System.in);
-    Map<String, ContactPerson> contactList = new HashMap<String,ContactPerson>();
-    public static String addressBookName;
-    boolean isPresent = false;
+    public Map<String, ContactPerson> contactList = new HashMap<String,ContactPerson>();
+    public static HashMap<String, ArrayList<ContactPerson>> personByCity  = new HashMap<String, ArrayList<ContactPerson>>();
+    public static HashMap<String, ArrayList<ContactPerson>> personByState = new HashMap<String, ArrayList<ContactPerson>>();
+    public String addressBookName;
 
     public String getAddressBookName() {
         return addressBookName;
     }
 
-    public static void setAddressBookName(String addressBookName) {
-        AddressBook.addressBookName = addressBookName;
+    public void setAddressBookName(String addressBookName) {
+        this.addressBookName = addressBookName;
     }
+
+    public ArrayList<ContactPerson> getContact() {
+        return new ArrayList<ContactPerson>(contactList.values());
+    }
+
 
     @Override
     public void operation() {
 
         boolean moreChanges = true;
         do {
+
             System.out.println("\nChoose the operation you want to perform");
             System.out.println(
                     "1.Add To Address Book\n2.Edit Existing Entry\n3.Display Address book\n4.Delete Contact\n5.Exit Address book System");
@@ -58,44 +66,62 @@ public class AddressBook implements AddressBookIF {
         System.out.println("Enter First Name: ");
         String firstName = scannerObject.next();
 
-        contactList.entrySet().stream().forEach(entry -> {
-            if(entry.getKey().equals(firstName.toLowerCase())) {
-                System.out.println("Contact Already Exists");
-                isPresent = true;
-                return;
-            }
-        });
+        if(contactList.containsKey(firstName)) {
+            System.out.println("Contact Already Exists");
+            return;
+        }
 
-        if(isPresent == false) {
+        System.out.println("Enter Last Name: ");
+        String lastName = scannerObject.next();
 
-            System.out.println("Enter Last Name: ");
-            String lastName = scannerObject.next();
+        System.out.println("Enter Phone Number: ");
+        long phoneNumber = scannerObject.nextLong();
 
-            System.out.println("Enter Phone Number: ");
-            long phoneNumber = scannerObject.nextLong();
+        System.out.println("Enter Email: ");
+        String email = scannerObject.next();
 
-            System.out.println("Enter Email: ");
-            String email = scannerObject.next();
+        System.out.println("Enter City: ");
+        String city = scannerObject.next();
 
-            System.out.println("Enter City: ");
-            String city = scannerObject.next();
+        System.out.println("Enter State: ");
+        String state = scannerObject.next();
 
-            System.out.println("Enter State: ");
-            String state = scannerObject.next();
+        System.out.println("Enter Zip Code: ");
+        long zipCode = scannerObject.nextLong();
 
-            System.out.println("Enter Zip Code: ");
-            long zipCode = scannerObject.nextLong();
+        person.setFirstName(firstName);
+        person.setLastName(lastName);
+        person.setPhoneNumber(phoneNumber);
+        person.setEmail(email);
+        address.setCity(city);
+        address.setState(state);
+        address.setZip(zipCode);
+        person.setAddress(address);
+        addPersonToCity(person);
+        addPersonToState(person);
+        contactList.put(firstName, person);
 
-            person.setFirstName(firstName);
-            person.setLastName(lastName);
-            person.setPhoneNumber(phoneNumber);
-            person.setEmail(email);
-            address.setCity(city);
-            address.setState(state);
-            address.setZip(zipCode);
-            person.setAddress(address);
+    }
 
-            contactList.put(firstName.toLowerCase(), person);
+    public void addPersonToCity(ContactPerson contact) {
+        if (personByCity.containsKey(contact.getAddress().getCity())) {
+            personByCity.get(contact.getAddress().getCity()).add(contact);
+        }
+        else {
+            ArrayList<ContactPerson> cityList = new ArrayList<ContactPerson>();
+            cityList.add(contact);
+            personByCity.put(contact.getAddress().getCity(), cityList);
+        }
+    }
+
+    public void addPersonToState(ContactPerson contact) {
+        if (personByState.containsKey(contact.getAddress().getState())) {
+            personByState.get(contact.getAddress().getState()).add(contact);
+        }
+        else {
+            ArrayList<ContactPerson> stateList = new ArrayList<ContactPerson>();
+            stateList.add(contact);
+            personByState.put(contact.getAddress().getState(), stateList);
         }
     }
 
