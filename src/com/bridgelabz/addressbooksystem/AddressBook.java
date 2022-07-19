@@ -2,6 +2,10 @@ package com.bridgelabz.addressbooksystem;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class AddressBook implements AddressBookIF {
 
@@ -33,7 +37,7 @@ public class AddressBook implements AddressBookIF {
 
             System.out.println("\nChoose the operation you want to perform");
             System.out.println(
-                    "1.Add To Address Book\n2.Edit Existing Entry\n3.Delete Contact\n4.Display Address book\n5.Display Sorted Address Book By Custom Criteria\n6.Exit Address book System");
+                    "1.Add To Address Book\n2.Edit Existing Entry\n3.Delete Contact\n4.Display Address book\n5.Display Sorted Address Book By Custom Criteria\n6.Write To File\n7.Read From File\n8.Exit Address book System");
 
             switch (scannerObject.nextInt()) {
                 case 1:
@@ -54,7 +58,13 @@ public class AddressBook implements AddressBookIF {
                     int sortingChoice = scannerObject.nextInt();
                     sortAddressBook(sortingChoice);
                     break;
-                case 7:
+                case 6:
+                    writeToAddressBookFile();
+                    System.out.println("Written To file");
+                    break;
+                case 7: readDataFromFile();
+                    break;
+                case 8:
                     moreChanges = false;
                     System.out.println("Exiting Address Book: "+this.getAddressBookName()+" !");
 
@@ -218,6 +228,7 @@ public class AddressBook implements AddressBookIF {
         System.out.println("-----------------------------------------");
 
     }
+
     public void printSortedList(List<ContactPerson> sortedContactList) {
         System.out.println("------ Sorted Address Book "+this.getAddressBookName()+" ------");
         Iterator iterator = sortedContactList.iterator();
@@ -258,6 +269,47 @@ public class AddressBook implements AddressBookIF {
                 break;
         }
 
+    }
+
+    public void writeToAddressBookFile() {
+
+        String bookName = this.getAddressBookName();
+        String fileName = bookName+"BookName.txt";
+
+        StringBuffer addressBookBuffer = new StringBuffer();
+        contactList.values().stream().forEach(contact -> {
+            String personDataString = contact.toString().concat("\n");
+            addressBookBuffer.append(personDataString);
+        });
+
+        try {
+            Files.write(Paths.get(fileName), addressBookBuffer.toString().getBytes());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public List<String> readDataFromFile() {
+
+        List<String> addressBookList = new ArrayList<String>();
+        String bookName = this.getAddressBookName();
+        String fileName = bookName+"BookName.txt";
+        System.out.println("Reading from : "+fileName+"\n");
+        try {
+            Files.lines(new File(fileName).toPath())
+                    .map(line -> line.trim())
+                    .forEach(employeeDetails -> {
+                        System.out.println(employeeDetails);
+                        addressBookList.add(employeeDetails);
+                    });
+
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        return addressBookList;
     }
 
 }
